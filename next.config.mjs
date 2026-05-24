@@ -1,8 +1,4 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-  experimental: {
-    serverComponentsExternalPackages: ['next-auth'],
-  },
-};
+const nextConfig = {};
 
 export default nextConfig;
