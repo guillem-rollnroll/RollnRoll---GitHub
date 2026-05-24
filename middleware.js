@@ -1,30 +1,16 @@
-export const runtime = "nodejs";
+import { NextResponse } from "next/server";
 
-import NextAuth from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
+export default function middleware(req) {
+  const token = req.cookies.get("next-auth.session-token") || 
+                req.cookies.get("__Secure-next-auth.session-token");
+  
+  if (!token) {
+    return NextResponse.redirect(new URL("/login", req.url));
+  }
+  
+  return NextResponse.next();
+}
 
-const handler = NextAuth({
-  providers: [
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    }),
-  ],
-  callbacks: {
-    async signIn({ user }) {
-      if (user.email?.endsWith("@rollnroll.com")) {
-        return true;
-      }
-      return false;
-    },
-    async session({ session, token }) {
-      return session;
-    },
-  },
-  pages: {
-    signIn: "/login",
-    error: "/login",
-  },
-});
-
-export { handler as GET, handler as POST };
+export const config = {
+  matcher: ["/"],
+};
